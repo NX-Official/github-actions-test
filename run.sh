@@ -1,6 +1,6 @@
 #!/bin/sh
 
-serviceName = "github-actions-test"
+serviceName="github-actions-test"
 
 # 停止服务
 systemctl stop $serviceName
