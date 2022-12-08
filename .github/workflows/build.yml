@@ -8,6 +8,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: 直接在服务器执行命令
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SECRET }}
+          script: cd ~/github-actions-test && git pull && bash run.sh
 #      - name: Webhook
 #        run: |
 #          curl ${{ secrets.WEBHOOK_URL }}
