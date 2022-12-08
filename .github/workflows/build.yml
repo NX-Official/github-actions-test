@@ -3,17 +3,14 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
-      - "**.txt"
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Webhook
-        run: |
-          curl ${{ secrets.WEBHOOK_URL }}
+#      - name: Webhook
+#        run: |
+#          curl ${{ secrets.WEBHOOK_URL }}
 
 
 #jobs:
