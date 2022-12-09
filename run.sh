@@ -3,7 +3,7 @@
 serviceName="github-actions-test"
 
 # 停止服务
-systemctl stop github-actions-test
+systemctl stop $serviceName
 rm main -f
 
 # 重新编译
