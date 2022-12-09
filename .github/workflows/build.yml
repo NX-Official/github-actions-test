@@ -8,13 +8,22 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: 直接在服务器执行命令
+      - name: 在服务器拉取代码，重新编译并重启服务
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           password: ${{ secrets.DEPLOY_SECRET }}
-          script: cd ~/github-actions-test && git pull && bash run.sh
+          script: ｜
+            cd ~/github-actions-test 
+            git pull
+            systemctl stop github-actions-test
+            go mod tidy
+            go build main.go
+            systemctl start github-actions-test
+            systemctl status github-actions-test
+
+
 #      - name: Webhook
 #        run: |
 #          curl ${{ secrets.WEBHOOK_URL }}
