@@ -31,8 +31,11 @@ jobs:
           Deploy_Path: ${{ secrets.Deploy_Path }}
 
         run: |
+          # test
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "touch test"
+          
           # Copy the binary to the remote server
-          #scp -o StrictHostKeyChecking=no -P ${{ env.SSH_PORT }} -r main ${{ env.SSH_USERNAME }}@${{ env.DEPLOY_HOST }}:${{ env.Deploy_Path }}
+          #scp -o StrictHostKeyChecking=no -P ${{ env.SSH_PORT }} main ${{ env.SSH_USERNAME }}@${{ env.DEPLOY_HOST }}:${{ env.Deploy_Path }}
           sshpass -p $SSH_PASSWORD scp -P $SSH_PORT main $SSH_USERNAME@$DEPLOY_HOST:$DEPLOY_PATH
           
           # Restart the service on the remote server
