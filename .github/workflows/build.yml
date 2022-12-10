@@ -32,7 +32,7 @@ jobs:
 
         run: |
           # Stop the service
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl stop github-actions-test && rm -rf $DEPLOY_PATH/main" "
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl stop github-actions-test && rm -rf $DEPLOY_PATH/main"
           
           # Copy the binary to the remote server
           # sshpass -p $SSH_PASSWORD scp -P $SSH_PORT -f main $SSH_USERNAME@$DEPLOY_HOST:$DEPLOY_PATH
