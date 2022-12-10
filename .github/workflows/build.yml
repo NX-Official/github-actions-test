@@ -1,20 +1,65 @@
-name: Build
+name: Deploy
 on:
   push:
-    branches:
-      - main
+    branch:
+      - v2
+
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: 直接在服务器执行命令
-        uses: appleboy/ssh-action@master
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Golang
+      - uses: actions/setup-go@v3
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_SECRET }}
-          script: cd ~/github-actions-test && git pull && bash run.sh
+          go-version: '1.19'
+          cache: true
+
+      - name: Build
+        run: go build main.go
+        outputs:
+          binary-file: ${{ steps.build.outputs.binary-file }}
+
+      - name: Deploy
+        env:
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_HOST: ${{ secrets.SSH_HOST }}
+          Deploy_Path: ${{ secrets.Deploy_Path }}
+
+        run: |
+          # Copy the binary to the remote server
+          sshpass -p $SSH_PASSWORD scp -o StrictHostKeyChecking=no $BINARY_FILE $SSH_USERNAME@$DEPLOY_HOST:$Deploy_Path
+          
+          # Restart the service on the remote server
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
+
+
+
+#name: Build
+#on:
+#  push:
+#    branches:
+#      - v2
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: 编译
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.DEPLOY_HOST }}
+#          username: ${{ secrets.DEPLOY_USER }}
+#          password: ${{ secrets.DEPLOY_SECRET }}
+#          script: cd ~/github-actions-test && git pull && bash run.sh
+
+
+
+
 #      - name: Webhook
 #        run: |
 #          curl ${{ secrets.WEBHOOK_URL }}
