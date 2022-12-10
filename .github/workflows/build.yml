@@ -36,7 +36,7 @@ jobs:
           
           
           # Restart the service on the remote server
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
+          # sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
 
 
 
