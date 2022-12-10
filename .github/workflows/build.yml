@@ -17,10 +17,11 @@ jobs:
           go-version: '1.19'
           cache: true
 
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
       - name: Build
         run: go build main.go
-        env:
-          binary-file: 'main'
 
       - name: Deploy
         env:
@@ -31,12 +32,11 @@ jobs:
           Deploy_Path: ${{ secrets.Deploy_Path }}
 
         run: |
-          # 使用scp命令将文件上传到服务器
-          scp -P $SSH_PORT -o StrictHostKeyChecking=no main $SSH_USERNAME@$DEPLOY_HOST:$Deploy_Path
-          
+          # Copy the binary to the remote server
+          sshpass -p $SSH_PASSWORD scp -o StrictHostKeyChecking=no main $SSH_USERNAME@$DEPLOY_HOST:DEPLOY_PATH
           
           # Restart the service on the remote server
-          # sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
 
 
 
