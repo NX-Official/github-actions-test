@@ -32,13 +32,13 @@ jobs:
 
         run: |
           # Stop the service
-          #sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl stop github-actions-test && rm -rf $DEPLOY_PATH/main"
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl stop github-actions-test && rm -rf $DEPLOY_PATH/main"
           
           # Copy the binary to the remote server
           sshpass -p $SSH_PASSWORD scp -r -o StrictHostKeyChecking=no -P 47 main root@www.nickxu.top:/root/github-actions-test
           
           # Restart the service on the remote server
-          #sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl start github-actions-test"
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl start github-actions-test"
 
 #name: Build
 #on:
