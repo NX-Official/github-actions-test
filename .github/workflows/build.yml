@@ -35,7 +35,7 @@ jobs:
 
         run: |
           # Copy the binary to the remote server
-          sshpass -p $SSH_PASSWORD scp -o StrictHostKeyChecking=no $BINARY_FILE $SSH_USERNAME@$DEPLOY_HOST:$Deploy_Path
+          scp -P $SSH_PORT -o StrictHostKeyChecking=no my-binary $SSH_USERNAME:$SSH_PASSWORD@$DEPLOY_HOST:$Deploy_Path
           
           # Restart the service on the remote server
           sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
