@@ -27,7 +27,7 @@ jobs:
           SSH_USERNAME: ${{ secrets.DEPLOY_USER }}
           SSH_PASSWORD: ${{ secrets.DEPLOY_SECRET }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
-          DEPLOY_HOST: ${{ secrets.SSH_HOST }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           Deploy_Path: ${{ secrets.DEPLOY_PATH }}
 
         run: |
