@@ -17,9 +17,6 @@ jobs:
           go-version: '1.19'
           cache: true
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
       - name: Build
         run: go build main.go
 
@@ -36,7 +33,7 @@ jobs:
           sshpass -p $SSH_PASSWORD scp -o StrictHostKeyChecking=no main $SSH_USERNAME@$DEPLOY_HOST:DEPLOY_PATH
           
           # Restart the service on the remote server
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
+          # sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl restart github-actions-test"
 
 
 
