@@ -9,7 +9,7 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(200, "Hello World, here is gin")
+		c.String(200, "This is a test")
 	})
 
 	r.Run(":8080")
