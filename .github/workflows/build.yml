@@ -48,4 +48,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
-
+      - name: Pull and run
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_SECRET }}
+          script: cd /home/admin/projects/github-actions-test && docker-compose pull && docker-compose up -d
