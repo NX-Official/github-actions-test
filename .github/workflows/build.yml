@@ -2,80 +2,50 @@ name: Build
 on:
   push:
     branch:
-      - v2
+      - v3
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v3
 
-      - name: Setup Golang
-        uses: actions/setup-go@v3
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          go-version: '1.19'
-          cache: true
+          # list of Docker images to use as base name for tags
+          images: ${{ secrets.IMAGE_URL }} # registry.cn-hangzhou.aliyuncs.com/xxxxx/xxxxx
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
 
-      - name: Build
-        run: go build main.go
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
-      - name: Deploy
-        env:
-          SSH_USERNAME: ${{ secrets.DEPLOY_USER }}
-          SSH_PASSWORD: ${{ secrets.DEPLOY_SECRET }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-        run: |
-          # Stop the service
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl stop github-actions-test && rm -rf $DEPLOY_PATH/main"
-          
-          # Copy the binary to the remote server
-          sshpass -p $SSH_PASSWORD scp -r -o StrictHostKeyChecking=no -P $SSH_PORT main $SSH_USERNAME@$DEPLOY_HOST:$DEPLOY_PATH
-          
-          # Restart the service
-          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$DEPLOY_HOST -p $SSH_PORT "systemctl start github-actions-test"
+      - name: Login to Aliyun Registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
 
-#name: Build
-#on:
-#  push:
-#    branches:
-#      - v2
-#jobs:
-#  build:
-#    name: Build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: 编译
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.DEPLOY_HOST }}
-#          username: ${{ secrets.DEPLOY_USER }}
-#          password: ${{ secrets.DEPLOY_SECRET }}
-#          script: cd ~/github-actions-test && git pull && bash run.sh
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: hello/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
-
-
-
-#      - name: Webhook
-#        run: |
-#          curl ${{ secrets.WEBHOOK_URL }}
-
-
-#jobs:
-#    build:
-#        name: Build
-#        runs-on: ubuntu-latest
-#        steps:
-#        - name: load Go 1.18 env
-#          uses: actions/setup-go@v3
-#          with:
-#              go-version: '1.19'
-#              cache: true
-#
-#
-#        - name: checkout
-#          uses: actions/checkout@v3
 

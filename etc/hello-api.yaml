@@ -1,0 +1,14 @@
+Name: hello-api
+Host: 0.0.0.0
+Port: 8888
+
+
+DBList:
+  Mysql:
+    Address: host.docker.internal:3306
+    Username: root
+    Password: "12345678"
+    DBName: "test"
+  Redis:
+    Address: host.docker.internal:6379
+    Password:

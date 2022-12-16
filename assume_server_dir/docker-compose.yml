@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  hello-api:
+    image: registry.cn-hangzhou.aliyuncs.com/nxs-test/github-actions-test:latest
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    volumes:
+      - ./etc:/app/etc
+    ports:
+      - "8888:8888"
+    stdin_open: true
+    tty: true

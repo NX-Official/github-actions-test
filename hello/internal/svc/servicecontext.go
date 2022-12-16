@@ -1,0 +1,73 @@
+package svc
+
+import (
+	"context"
+	"fmt"
+	"github-actions-test/hello/internal/config"
+	"github.com/go-redis/redis/v8"
+	"gorm.io/driver/mysql"
+	_ "gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"time"
+)
+
+type ServiceContext struct {
+	Config config.Config
+	DBList *DBList
+}
+
+type DBList struct {
+	Mysql *gorm.DB
+	Redis *redis.Client
+}
+
+func NewServiceContext(c config.Config) *ServiceContext {
+	return &ServiceContext{
+		Config: c,
+		DBList: initDB(c),
+	}
+}
+
+func initDB(c config.Config) *DBList {
+	dbList := new(DBList)
+	dbList.Mysql = initMysql(c)
+	dbList.Redis = initRedis(c)
+
+	return dbList
+}
+
+func initMysql(c config.Config) *gorm.DB {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		c.DBList.Mysql.Username,
+		c.DBList.Mysql.Password,
+		c.DBList.Mysql.Address,
+		c.DBList.Mysql.DBName,
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("init Mysql success")
+
+	return db
+}
+
+func initRedis(c config.Config) *redis.Client {
+	fmt.Println("connect Redis ...")
+	db := redis.NewClient(&redis.Options{
+		Addr:     c.DBList.Redis.Address,
+		Password: c.DBList.Redis.Password,
+		//DB:       c.DBList.Redis.DB,
+		//超时
+		ReadTimeout:  2 * time.Second,
+		WriteTimeout: 2 * time.Second,
+		PoolTimeout:  3 * time.Second,
+	})
+	_, err := db.Ping(context.Background()).Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("connect Redis success")
+	return db
+}
