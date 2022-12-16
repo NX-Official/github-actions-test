@@ -54,4 +54,5 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           password: ${{ secrets.DEPLOY_SECRET }}
+          port: ${{ secrets.SSH_PORT }}
           script: cd /home/admin/projects/github-actions-test && docker-compose pull && docker-compose up -d
