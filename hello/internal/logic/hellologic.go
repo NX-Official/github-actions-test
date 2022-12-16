@@ -24,7 +24,8 @@ func NewHelloLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HelloLogic 
 }
 
 func (l *HelloLogic) Hello(req *types.Request) (resp *types.Response, err error) {
+	_ = req
 	return &types.Response{
-		Message: "If you can see this message, it means that the service is running successfully.",
+		Message: "test again",
 	}, nil
 }
