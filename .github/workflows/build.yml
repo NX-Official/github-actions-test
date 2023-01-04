@@ -50,7 +50,7 @@ jobs:
 
       - name: Webhook
         run: |
-          curl "${{ secrets.WEBHOOK_URL }}"
+          curl --location --request GET '${{ secrets.WEBHOOK_URL }}' 
 
 #      - name: Pull and run
 #        uses: appleboy/ssh-action@master
