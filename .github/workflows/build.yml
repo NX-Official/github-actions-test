@@ -2,7 +2,7 @@ name: Build
 on:
   push:
     branch:
-      - v3
+      - v4
 
 jobs:
   build:
@@ -48,11 +48,15 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
-      - name: Pull and run
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_SECRET }}
-          port: ${{ secrets.SSH_PORT }}
-          script: sudo docker login --username=${{ secrets.ALIYUN_REGISTRY_USERNAME }} -p ${{ secrets.ALIYUN_REGISTRY_PASSWORD }} registry.cn-hangzhou.aliyuncs.com && cd /home/admin/projects/github-actions-test && docker-compose pull && docker-compose up -d
+      - name: Webhook
+        run: |
+          curl "${{ secrets.WEBHOOK_URL }}"
+
+#      - name: Pull and run
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.DEPLOY_HOST }}
+#          username: ${{ secrets.DEPLOY_USER }}
+#          password: ${{ secrets.DEPLOY_SECRET }}
+#          port: ${{ secrets.SSH_PORT }}
+#          script: sudo docker login --username=${{ secrets.ALIYUN_REGISTRY_USERNAME }} -p ${{ secrets.ALIYUN_REGISTRY_PASSWORD }} registry.cn-hangzhou.aliyuncs.com && cd /home/admin/projects/github-actions-test && docker-compose pull && docker-compose up -d

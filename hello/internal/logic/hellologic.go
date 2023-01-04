@@ -26,6 +26,6 @@ func NewHelloLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HelloLogic 
 func (l *HelloLogic) Hello(req *types.Request) (resp *types.Response, err error) {
 	_ = req
 	return &types.Response{
-		Message: "test again and again",
+		Message: "test webhook",
 	}, nil
 }

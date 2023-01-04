@@ -1,0 +1,20 @@
+[
+    {
+        "id": "webhook",
+        "execute-command": "bash ./redeploy.sh",
+        "command-working-directory": "/home/admin/projects/github-actions-test",
+        "trigger-rule":
+        {
+            "match":
+            {
+                "type": "value",
+                "value": "1234567",
+                "parameter":
+                {
+                    "source": "url",
+                    "name": "token"
+                }
+            }
+        }
+    }
+]
